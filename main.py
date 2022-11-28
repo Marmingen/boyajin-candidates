@@ -156,7 +156,7 @@ def select_menu(ax):
         print("no choice selected")
         time.sleep(1)
         
-def cluster_stars():
+def cluster_stars(addition):
     clump_stars = {}
     
     for name, x, y, z in zip(clump_names, x_clump,\
@@ -166,8 +166,9 @@ def cluster_stars():
     clump_stars["Boyajin"] = Star("Boyajin", x_boy, y_boy,\
         z_boy, "boy")
     
-    clump_stars["7642696"] = Star("7642696", 72, 25, 137,\
-        "new")
+    if addition == "w":
+        clump_stars["7642696"] = Star("7642696", 72, 25, 137,\
+            "new")
     
     dist = 0
     
@@ -184,7 +185,8 @@ def info():
     clear()
     print("information about the cluster")
     print(bar)
-    print(f"Average distance between stars in cluster: {round(cluster_stars(),0)}pc")
+    print(f"Average distance between stars in cluster (with paper 2 addition): {round(cluster_stars('w'),0)}pc")
+    print(f"Average distance between stars in cluster (without paper 2 addition): {round(cluster_stars('wo'),0)}pc")
     print("press [Enter] to continue")
     input()
         
