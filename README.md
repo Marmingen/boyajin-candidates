@@ -14,5 +14,5 @@ This is in fact the standard result (as I have chosen to define it). Though I hi
 
 ![std-view-vs-full](https://user-images.githubusercontent.com/106428188/204370103-c6a281ba-1ffa-4a46-aaaf-cdb82acb289a.png)
 
-Even though the clustering isn't seemingly compact in human scale, when comparing to all found slow-dippers one realizes it is in fact significant.
+Even though the clustering isn't seemingly compact in human scale, when comparing to all found slow-dippers one realizes it is in fact significant. I have not adjusted for observational bias due to distance, and neither have I encountered any studies analyzing that.
 (If you're observant, you might realize this is actually printing `all+`)
