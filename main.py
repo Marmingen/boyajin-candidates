@@ -185,16 +185,14 @@ def cluster_stars(addition):
         clump_stars["7642696"] = Star("7642696", 72, 25, 137,\
             "new")
     
-    dist = 0
+    dist = []
+    vals = list(clump_stars.values())
     
-    for star in clump_stars.values():
-        temp_dist = 0
-        for o_star in clump_stars.values():
-            temp_dist += star.dist(o_star)
-        temp_dist = temp_dist/(len(clump_stars.values())-1)
-        dist += temp_dist
+    for star in vals:
+        for o_star in vals[vals.index(star)+1:]:
+            dist.append(star.dist(o_star))
         
-    return int(dist/len(clump_stars))
+    return int(sum(dist)/len(dist)+0.5)
         
 def info():
     clear()
