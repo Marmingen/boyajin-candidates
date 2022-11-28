@@ -1,9 +1,17 @@
+# Visualizing the position of slow dippers as found by 
+# Boyajin 2016 and Schmidt 2021
+# Marminge 
+
+###########################################################
+## IMPORTS
+
 #%matplotlib inline
-import matplotlib.markers as mk
 import numpy as np
 import matplotlib.pyplot as plt
 import os
 import time
+from Star import Star
+from matplotlib.ticker import AutoLocator
 
 ###########################################################
 ## GLOBAL CONSTANTS
@@ -19,7 +27,7 @@ clear = lambda: os.system('cls')
 
 ##############################
 # clump data
-star_labels_clump = ["2913753", "3037513", "3093586", \
+clump_names = ["2913753", "3037513", "3093586", \
     "5334181", "5436225", "5482005", "7971210", \
     "8046240"]
 
@@ -30,7 +38,7 @@ z_clump = [39, -10, -55, 98, -3, -33, 130, 36]
 ##############################
 # non-clump data
 
-star_labels_nclump = ["2958269", "8128754", "8233191"\
+nclump_names = ["2958269", "8128754", "8233191"\
     "8491743", "8935719", "8942941", "8987978"]
 
 x_nclump = [2180, 1507, 7658, 1025, 1154, 687, 829]
@@ -47,7 +55,7 @@ z_boy = -137
 ##############################
 # new candidates data
 
-star_labels_new = ["1933490", "2354429", "2506699",\
+new_names = ["1933490", "2354429", "2506699",\
     "2560138", "3781455", "4111136", "4754014",\
     "4989822", "5190574", "6757658", "6804071",\
     "6814519", "7255468", "7575062", "7642696"]
@@ -64,11 +72,11 @@ z_new = [-151, 299, 237, 650, -563, -314, 196, 278, 352,\
 
 def print_clump(ax):
     ax.scatter(x_clump, y_clump, z_clump, color='black',\
-        depthshade=False, marker='o', label="clustered stars from paper 1")
+        depthshade=False, marker='o', label="clustered slow dippers from paper 1")
     
 def print_non_clump(ax):
     ax.scatter(x_nclump, y_nclump, z_nclump, color='black',\
-        depthshade=False, marker='o', facecolor='none', label="non-clustered stars from paper 1")
+        depthshade=False, marker='o', facecolor='none', label="non-clustered slow dippers from paper 1")
     
 def print_boy(ax):
     ax.scatter(x_boy, y_boy, z_boy, color='red',\
@@ -80,7 +88,7 @@ def print_sun(ax):
     
 def print_new(ax):
     ax.scatter(x_new, y_new, z_new, color='blue',\
-        depthshade=False, marker='o', facecolor='none', label="new candidates from paper 2")  
+        depthshade=False, marker='o', facecolor='none', label="new slow dippers from paper 2")  
     
 def print_standard(ax):
     print_clump(ax)
@@ -88,9 +96,25 @@ def print_standard(ax):
     print_sun(ax)
     ax.scatter(72, 25, 137, color='blue',\
         marker='o', facecolor='none', label="clustered slow dipper from paper 2")
+    
+    ax.set_xticks(range(0,700,100))
+    ax.set_yticks(range(-200,300,100))
+    ax.set_zticks(range(-200,300,100))
+    
+    return "clustered slow dippers and sun"
+
+def print_cluster(ax):
+    print_clump(ax)
+    print_boy(ax)
+    ax.scatter(72, 25, 137, color='blue',\
+        marker='o', facecolor='none', label="clustered slow dipper from paper 2")
+    
+    ax.set_xticks(range(100,700,100))
+    ax.set_yticks(range(-200,300,100))
+    ax.set_zticks(range(-200,300,100))
+    
     return "clustered slow dippers"
 
-    
 def print_all(ax):
     print_clump(ax)
     print_non_clump(ax)
@@ -100,9 +124,9 @@ def print_all(ax):
     return "all slow dippers as of Schmidt 2021"
     
 def select_menu(ax):
-    
     choices = {"clu": print_clump, "non": print_non_clump,\
         "boy": print_boy, "sun": print_sun, "new": print_new}
+    
     while True:
         title = "slow dippers of labels "
         latch = False
@@ -131,7 +155,39 @@ def select_menu(ax):
         
         print("no choice selected")
         time.sleep(1)
+        
+def cluster_stars():
+    clump_stars = {}
     
+    for name, x, y, z in zip(clump_names, x_clump,\
+        y_clump, z_clump):
+        clump_stars[name] = Star(name, x, y, z, "clu")
+        
+    clump_stars["Boyajin"] = Star("Boyajin", x_boy, y_boy,\
+        z_boy, "boy")
+    
+    clump_stars["7642696"] = Star("7642696", 72, 25, 137,\
+        "new")
+    
+    dist = 0
+    
+    for star in clump_stars.values():
+        temp_dist = 0
+        for o_star in clump_stars.values():
+            temp_dist += star.dist(o_star)
+        temp_dist = temp_dist/(len(clump_stars.values())-1)
+        dist += temp_dist
+        
+    return int(dist/len(clump_stars))
+        
+def info():
+    clear()
+    print("information about the cluster")
+    print(bar)
+    print(f"Average distance between stars in cluster: {round(cluster_stars(),0)}pc")
+    print("press [Enter] to continue")
+    input()
+        
 def menu():
     
     while True:
@@ -142,16 +198,23 @@ def menu():
         print("Visual presentation of the Schmidt 2021 data")
         print(bar)
         print("type standard to print the standard selection")
+        print("type cluster to print the clustered stars")
         print("type select to select what to print")
         print("type all to print all stars")
+        print("type info to view some info about the cluster")
         print("type exit to exit")
         print(bar)
         choice = input("input: ")
         
         if choice == "exit":
             break
+        elif choice == "info":
+            info()
+            continue
         elif choice == "standard":
             title = print_standard(ax)
+        elif choice == "cluster":
+            title = print_cluster(ax)
         elif choice == "all":
             title = print_all(ax)
         elif choice == "select":
@@ -160,7 +223,7 @@ def menu():
             print("unclear command")
             time.sleep(1)
             continue
-            
+
         ax.set_xlabel('x-axis (pc)')
         ax.set_ylabel('y-axis (pc)')
         ax.set_zlabel('z-axis (pc)')
@@ -169,7 +232,6 @@ def menu():
         
         plt.show()
         
-
 def main():
     menu()
     
