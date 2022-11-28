@@ -123,9 +123,23 @@ def print_all(ax):
     print_new(ax)
     return "all slow dippers as of Schmidt 2021"
     
+def print_box(ax):
+    ax.plot([-50,700,700,-50,-50,-50,700,700,-50,-50],\
+        [-200,-200,200,200,-200,-200,-200,200,200,-200],\
+        [-200,-200,-200,-200,-200,200,200,200,200,200],\
+        color="gray", label="standard view")
+    ax.plot([-50,-50],[200,200],[-200,200],color="gray")
+    ax.plot([700,700],[200,200],[-200,200],color="gray")
+    ax.plot([700,700],[-200,-200],[-200,200],color="gray")
+    
+def print_all_plus(ax):
+    print_all(ax)
+    print_box(ax)
+
 def select_menu(ax):
     choices = {"clu": print_clump, "non": print_non_clump,\
-        "boy": print_boy, "sun": print_sun, "new": print_new}
+        "boy": print_boy, "sun": print_sun, "new": print_new,\
+        "box": print_box}
     
     while True:
         title = "slow dippers of labels "
@@ -140,6 +154,7 @@ def select_menu(ax):
         print("print Boyajin\'s star: boy")
         print("print sun: sun")
         print("print new candidates: new")
+        print("print box of standard view: box")
         print(bar)
         
         choice = input("input: ")
@@ -203,6 +218,7 @@ def menu():
         print("type cluster to print the clustered stars")
         print("type select to select what to print")
         print("type all to print all stars")
+        print("type all+ to print all stars and visualize standard view")
         print("type info to view some info about the cluster")
         print("type exit to exit")
         print(bar)
@@ -219,6 +235,8 @@ def menu():
             title = print_cluster(ax)
         elif choice == "all":
             title = print_all(ax)
+        elif choice == "all+":
+            title = print_all_plus(ax)
         elif choice == "select":
             title = select_menu(ax)
         else:
